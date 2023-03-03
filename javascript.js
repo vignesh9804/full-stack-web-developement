@@ -1,15 +1,7 @@
 const taskContainer = document.querySelector(".task__container");
+const globalStore = [];
 console.log(taskContainer);
-const saveChanges = () => {
-    const taskData = {
-        id: `${Date.now()}`,
-        imageUrl: document.getElementById("imageurl").value,
-        taskTitle: document.getElementById("tasktitle").value,
-        taskType: document.getElementById("tasktype").value,
-        taskDescription: document.getElementById("taskdescription").value
-    };
-    const newCard = `
-    <div class="col-sm-12 col-md-6 col-lg-4">
+const generateNewCard = (taskData) =>`<div class="col-sm-12 col-md-6 col-lg-4">
             <div class="card">
               <div class="card-header d-flex justify-content-end gap-2">
                 <button type="button" class="btn btn-outline-success"><i class="fas fa-pencil-alt"></i></button>
@@ -23,5 +15,24 @@ const saveChanges = () => {
               </div>
             </div>
           </div>`;
-    taskContainer.insertAdjacentHTML("beforeend",newCard);
+const loadIntialCardData = () => {
+  const getCardData = localStorage.getItem("tasky__9804");
+  const {cards} = JSON.parse(getCardData);
+  cards.map((cardObject) => {
+    taskContainer.insertAdjacentHTML("beforeend",generateNewCard(cardObject));
+    globalStore.push(cardObject);
+  })
+};
+const saveChanges = () => {
+    const taskData = {
+        id: `${Date.now()}`,
+        imageUrl: document.getElementById("imageurl").value,
+        taskTitle: document.getElementById("tasktitle").value,
+        taskType: document.getElementById("tasktype").value,
+        taskDescription: document.getElementById("taskdescription").value
+    };
+    taskContainer.insertAdjacentHTML("beforeend",generateNewCard(taskData));
+    globalStore.push(taskData);
+    localStorage.setItem("tasky__9804",JSON.stringify({cards:globalStore}));
+
 };
